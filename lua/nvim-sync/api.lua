@@ -56,9 +56,18 @@ local function exec(action, file_path)
     :new({
       command = sync_exe_path,
       args = { action, file_relative_path, filename },
+      on_start = function()
+        if config.log then
+          print("Nvim-sync: " .. action .. "file " .. file_path .. " started")
+        end
+      end,
       on_exit = function(_, exit_code)
-        if config.log and exit_code ~= 0 then
-          print("Nvim-sync: " .. action .. "file " .. file_path .. " failed")
+        if config.log then
+          if exit_code ~= 0 then
+            print("Nvim-sync: " .. action .. "file " .. file_path .. " failed")
+          else
+            print("Nvim-sync: " .. action .. "file " .. file_path .. " success")
+          end
         end
       end,
     })
